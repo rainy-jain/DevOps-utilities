@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title><%= title %></title>
+    <!-- CSS only -->
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+      integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk"
+      crossorigin="anonymous"
+    />
+   <script>
+   function reload() {
+    document.location.reload();
+  }
+  
+  setTimeout(reload, 60000);
+   </script>
+    <!-- JS, Popper.js, and jQuery -->
+    <script
+      src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+      integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+      crossorigin="anonymous"
+    ></script>
+   
+    <script
+      src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+      integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"
+      integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI"
+      crossorigin="anonymous"
+    ></script>
+    <link rel="stylesheet" href="/stylesheets/style.css" />
+    <center><h2>Microservices Dashboard</h2></center>
+  </head>
+  <body>
+    <div>
+      <div class="table-responsive">
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th scope="col" style="width: 10%;">UAT</th>
+              <th scope="col" style="width: 15%;">Service</th>
+              <th scope="col" style="width: 45%;">URL</th>
+              <th scope="col" style="width: 20%;">Updated At</th>
+              <th scope="col" style="width: 15%;">Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% for (let i=0; i< result.length; i++) {%>
+
+            <tr>
+              <th scope="row"><%=  %></th>
+              <td><%=result[i].serviceName%></td>
+              <td><%=result[i].link%></td>
+              <td><%=result[i].updatedTime%></td>
+              <td><%=result[i].elb%></td>
+            </tr>
+            <%}%>
+          </tbody>
+        </table>
+      </div>
+      <div class="table-responsive">
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th scope="col" style="width: 10%;">PROD</th>
+              <th scope="col" style="width: 15%;">Service</th>
+              <th scope="col" style="width: 45%;">URL</th>
+              <th scope="col" style="width: 20%;">Updated At</th>
+              <th scope="col" style="width: 15%;">Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% for (let i=0; i< prodresult.length; i++) {%>
+
+            <tr>
+              <th scope="row"><%=  %></th>
+              <td><%=result[i].serviceName%></td>
+              <td><%=prodresult[i].prodlink%></td>
+              <td><%=prodresult[i].updatedTime%></td>
+              <td><%= prodresult[i].prodelb%></td>
+            </tr>
+            <%}%>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </body>
+</html>
