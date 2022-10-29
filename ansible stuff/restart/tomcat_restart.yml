@@ -1,0 +1,17 @@
+---
+- name: "Playbook for tomcat restart"
+  become: true
+  become_method: sudo
+  hosts:  messaging_engine_base_machines
+  tasks:
+  - name: enable restart
+    service:
+     name: tomcat
+     state: restarted
+
+  - name: tomcat status check
+    shell: service tomcat status
+    args:
+     warn: false
+    register: restart_status
+  - debug: msg="{{restart_status.stdout}}"

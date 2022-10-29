@@ -1,0 +1,67 @@
+---
+- name: Playbook to stop all the processes properly
+  hosts: consumer_machines
+  become: true
+  become_method: sudo
+  gather_facts: yes
+  vars:
+   process_name: consumer
+   folders:
+   - {id: 1, name: notification_consumer_sqs_msgeng_dr}
+   - {id: 2, name: notification_consumer_sqs_msgeng_mo}
+   - {id: 3, name: notification_consumer_sqs_msgeng_sendcom}
+
+  tasks:
+   - name: checking number of processes active
+     shell: ps -eaf | grep {{process_name}} | sed '/^[[:space:]]*$/d' | wc -l
+     register: check_running
+   - debug: msg="{{check_running}}"
+
+   - name: Checking if number of proceeses active are not three
+     fail:
+      msg: "The system does not have all three processes running"
+     when: check_running.stdout!="5"
+
+   - name: checking  if pid.out is empty
+     shell: cat pid.out | wc -w  #this command checks if the file is empty
+     args:
+      chdir: "/mscripts_sqs/{{item.name}}"
+     with_items: "{{folders}}"
+     register: pid_empty_status # this register contains number of lines contained in pid.out
+
+   - name: pid.out not empty,run stop script
+     command: "/mscripts_sqs/{{item.item.name}}/stop_notification_consumer_sqs.sh"
+     args:
+      chdir: "/mscripts_sqs/{{item.item.name}}"
+     with_items: "{{pid_empty_status.results}}"
+     when: item.stdout>0
+   - debug: msg="{{pid_empty_status}}"
+
+   - name: pid.out empty, populate it, then run stop script
+     block:
+      - name: populationg empty pid.out
+        shell: ps -eaf | grep {{ item.item.name}} | awk {'print$2'}  > pid.out  #here, instead of process name add loop with_items {{folders}} and use item.item.name
+        args:
+         chdir: "/mscripts_sqs/{{item.item.name}}"
+        with_items: "{{pid_empty_status.results}}"
+      - name: pid.out is now filled, running stop script
+        command: "/mscripts_sqs/{{item.item.name}}/stop_notification_consumer_sqs.sh"
+        args:
+         chdir: "/mscripts_sqs/{{item.item.name}}"
+        with_items: "{{pid_empty_status.results}}"
+     when:  item.stdout=="0"
+
+   - name: checking if processes have been stopped successfully
+     shell: ps -eaf | grep {{process_name}} | sed '/^[[:space:]]*$/d' | wc -l
+     register: check_stopped
+   - debug: msg="{{check_stopped}}"
+
+   - name: Everything is not stopped successfully
+     fail:
+      msg:  Everything is not stopped successfully, there is some error
+     when: check_stopped.stdout!="2"
+
+   - debug: 
+      msg: "Everything stopped successfully"
+     when: check_stopped.stdout=="2"
+

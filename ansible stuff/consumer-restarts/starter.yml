@@ -1,0 +1,44 @@
+---
+- name: starts all processes
+  hosts: consumer_machines
+  become: true
+  become_method: sudo
+  gather_facts: yes
+  vars:
+    process_name: consumer
+    folders:
+    - {id: 1, name: notification_consumer_sqs_msgeng_dr}
+    - {id: 2, name: notification_consumer_sqs_msgeng_mo}
+    - {id: 3, name: notification_consumer_sqs_msgeng_sendcom}
+
+  tasks:
+  - name: checking number of processes running
+    shell: ps -eaf | grep {{process_name}} | sed '/^[[:space:]]*$/d' | wc -l
+    register: check_stopped
+  - debug:  msg="{{check_stopped}}"
+
+  - name: if all processes have not stopped, fail
+    fail:
+     msg: "All processes not stopped properly"
+    when: check_stopped.stdout!="2"
+
+  - name: if all processes have stopped, run start script
+    command: "/mscripts_sqs/{{item.name}}/start_notification_consumer_sqs.sh"
+    args:
+      chdir: "/mscripts_sqs/{{item.name}}"
+    with_items: "{{folders}}"
+    when: check_stopped.stdout=="2"
+
+  - name: checking if all processes are running
+    shell: ps -eaf | grep {{process_name}} | sed '/^[[:space:]]*$/d' | wc -l
+    register: check_running
+  - debug: msg="{{check_running}}"
+
+  - name: if all processes have not started, fail
+    fail:
+     msg: "All processes not started properly"
+    when: check_running.stdout!="5"
+
+  - debug:
+     msg: "All processes started successfully"
+    when: check_running.stdout=="5"
