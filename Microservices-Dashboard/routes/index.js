@@ -8,7 +8,6 @@ var prodElbCheck = require("../ProdELBCheck.js");
 var Config = require("../Configs.json");
 
 let services = Object.keys(Config.uat)
-let environments=["uat","prod"]
 
 router.get("/", async function (req, res, next) {
   const uatTime = [];

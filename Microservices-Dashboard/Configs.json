@@ -1,24 +1,24 @@
 {
-  "ProdRoleArn": "arn:aws:iam::013856208911:role/Microservices-role",
+  "ProdRoleArn": "<prod-role>",
   "SourceRegion": "us-east-1",
   "uat": {
     "PatientSync": {
       "PatientSyncArn": "",
-      "link": "https://uat-patientsync.remscripts.com/patientsync/",
+      "link": "<link>",
       "cluster": "UAT-Patientsync",
       "services": "Service-UAT-Patientsync",
       "ELB": "uat-patientsync"
     },
     "UserSignup": {
-      "link": "http://uat-microservices-108511006.us-east-1.elb.amazonaws.com:9093/usersignup/",
-      "MicroserviceArn": "arn:aws:ecs:us-east-1:998585994771:cluster/UAT-Microservices",
+      "link": "<link>",
+      "MicroserviceArn": "<arn-for-cluster>",
       "cluster": "UAT-Microservices",
       "services": "Service-UAT-Microservices",
       "ELB": "uat-microservices"
     },
     "Sch": {
-      "link": " http://uat-microservices-108511006.us-east-1.elb.amazonaws.com:9091/sch/",
-      "MicroserviceArn": "arn:aws:ecs:us-east-1:998585994771:cluster/UAT-Microservices",
+      "link": "<link>",
+      "MicroserviceArn": "<arn-for-cluster>",
       "cluster": "UAT-Microservices",
       "services": "Service-UAT-Microservices",
       "ELB": "uat-microservices"
@@ -32,24 +32,22 @@
     }
   },
   "prod": {
-    "AccessKeyId": "AKIAQGOPE7AHR47AFIUK",
-    "SecretAccessKey": "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",
     "PatientSync": {
-      "link": "https://mxpatientsync.medrefill.com/patientsync",
+      "link": "<link>",
       "cluster": "Mxmicroservice-patientsync",
       "services": "Patientsync",
       "ELB": "patientsyncmedrefillcom"
     },
     "UserSignup": {
-      "link": "https://mxusersignup.medrefill.com/usersignup",
-      "MicroserviceArn": "arn:aws:ecs:us-east-1:998585994771:cluster/UAT-Microservices",
+      "link": "<link>",
+      "MicroserviceArn": "<arn-of-cluster>",
       "cluster": "Mxmicroservice-usersignup",
       "services": "Usersignup",
       "ELB": "mxusersignupmedrefillcom"
     },
     "Sch": {
-      "link": " https://mxsch.medrefill.com/sch",
-      "MicroserviceArn": "arn:aws:ecs:us-east-1:998585994771:cluster/UAT-Microservices",
+      "link": " <link>",
+      "MicroserviceArn": "<arn-of-cluster>",
       "cluster": "Mxmicroservice-SCH",
       "services": "Shortcode_handler",
       "ELB": "mxschmedrefillcom"

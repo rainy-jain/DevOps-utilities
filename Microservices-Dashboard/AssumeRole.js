@@ -2,7 +2,7 @@ var aws = require("aws-sdk"); //installed
 var Q = require("q"); //installed
 var fs = require("fs");
 var Config = require("./Configs.json");
-var ConfigUat = fs.readFileSync(__dirname + "/Configs.json"); //synchronouse
+var ConfigUat = fs.readFileSync(__dirname + "/Configs.json"); //synchronous
 var ConfigParams = ConfigUat.toString();
 ConfigParams = JSON.parse(ConfigParams);
 
