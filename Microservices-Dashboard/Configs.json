@@ -1,0 +1,63 @@
+{
+  "ProdRoleArn": "<prod-role>",
+  "SourceRegion": "us-east-1",
+  "uat": {
+    "PatientSync": {
+      "PatientSyncArn": "",
+      "link": "<link>",
+      "cluster": "UAT-Patientsync",
+      "services": "Service-UAT-Patientsync",
+      "ELB": "uat-patientsync"
+    },
+    "UserSignup": {
+      "link": "<link>",
+      "MicroserviceArn": "<arn-for-cluster>",
+      "cluster": "UAT-Microservices",
+      "services": "Service-UAT-Microservices",
+      "ELB": "uat-microservices"
+    },
+    "Sch": {
+      "link": "<link>",
+      "MicroserviceArn": "<arn-for-cluster>",
+      "cluster": "UAT-Microservices",
+      "services": "Service-UAT-Microservices",
+      "ELB": "uat-microservices"
+    },
+    "UserMigration": {
+      "UserMigrationArn": " ",
+      "link": "No link",
+      "cluster": "UAT-Usermigration",
+      "services": "usermigration-service",
+      "ELB": "uat-patientsyncremscriptscom"
+    }
+  },
+  "prod": {
+    "PatientSync": {
+      "link": "<link>",
+      "cluster": "Mxmicroservice-patientsync",
+      "services": "Patientsync",
+      "ELB": "patientsyncmedrefillcom"
+    },
+    "UserSignup": {
+      "link": "<link>",
+      "MicroserviceArn": "<arn-of-cluster>",
+      "cluster": "Mxmicroservice-usersignup",
+      "services": "Usersignup",
+      "ELB": "mxusersignupmedrefillcom"
+    },
+    "Sch": {
+      "link": " <link>",
+      "MicroserviceArn": "<arn-of-cluster>",
+      "cluster": "Mxmicroservice-SCH",
+      "services": "Shortcode_handler",
+      "ELB": "mxschmedrefillcom"
+    },
+    "UserMigration": {
+      "link": "No link",
+      "cluster": "Mxmicroservice-Usermigration",
+      "services": "Service-Usermigration",
+      "ELB": "mxschmedrefillcom"
+    }
+  }
+}
+
