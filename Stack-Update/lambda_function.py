@@ -7,107 +7,91 @@ cloudformation = boto3.resource('cloudformation')
 client = boto3.client('elb')
 ec2 = boto3.resource('ec2')
 
+
 def lambda_handler(event, context):
-      
-       
-    print(event) 
-    if event['detail']['eventName']=="CreateChangeSet":
-        arn=event['detail']['userIdentity']['arn']
-        slash=arn.index('/')
-        user=arn[slash+1: ]
+
+    print(event)
+    if event['detail']['eventName'] == "CreateChangeSet":
+        arn = event['detail']['userIdentity']['arn']
+        slash = arn.index('/')
+        user = arn[slash+1:]
         stack_name = event['detail']['requestParameters']['stackName']
-        
-      
+
         data = {
 
             'text': "<!here> Stack Refresh is initiated",
-            'attachments': [   
-                 {
-                 "text" :"*Stack*: _" +stack_name +"_ \n*Triggered by*:"+user,
-                 "type": "mrkdwn",
-                 "color":"#5bc0de",
-                 "attachment_type": "default"
-                       
-                 }
-             ]
-            }
-        requests.post(url='https://hooks.slack.com/services/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',
-              data=json.dumps(data))
-        
-    if event['detail']['eventName']=="SignalResource" and event['detail']['requestParameters']!=None:
-        print("Going inside")
-        
-       
-        stack_arn = event['detail']['requestParameters']['stackName']
-        stack_name=stack_arn.split('/')
-        stack_name=stack_name[-2]
-       
-            
-        
-        stack=cloudformation.Stack(stack_name) 
-        status=event['detail']['requestParameters']['status']
-        # if stack.stack_status == 'UPDATE_COMPLETE' :
-        if status=="SUCCESS":
-            
-            stack=cloudformation.Stack(stack_name)
-            
-         
+            'attachments': [
+                {
+                    "text": "*Stack*: _" + stack_name + "_ \n*Triggered by*:"+user,
+                    "type": "mrkdwn",
+                    "color": "#5bc0de",
+                    "attachment_type": "default"
 
-            
+                }
+            ]
+        }
+        requests.post(url= "< slack-url >",
+                      data=json.dumps(data))
+
+    if event['detail']['eventName'] == "SignalResource" and event['detail']['requestParameters'] != None:
+        print("Going inside")
+
+        stack_arn = event['detail']['requestParameters']['stackName']
+        stack_name = stack_arn.split('/')
+        stack_name = stack_name[-2]
+
+        stack = cloudformation.Stack(stack_name)
+        status = event['detail']['requestParameters']['status']
+        # if stack.stack_status == 'UPDATE_COMPLETE' :
+        if status == "SUCCESS":
+
+            stack = cloudformation.Stack(stack_name)
+
             print(list(stack.parameters))
-            ami_list=list(stack.parameters)  
+            ami_list = list(stack.parameters)
             for x in ami_list:
-                if x["ParameterKey"]=="AMIID":
-                    ami_id=x["ParameterValue"]
+                if x["ParameterKey"] == "AMIID":
+                    ami_id = x["ParameterValue"]
             image = ec2.Image(ami_id)
             response = image.describe_attribute(
-            Attribute='description'
-            
+                Attribute='description')
+            print(response['Description'])
+            inf = response['Description']['Value']
+
+            elb_name = list(stack.outputs[4].values())
+            link = elb_name[1]
+            startO = link.index('o')
+            abbreviation = link[startO:startO+7]
+            if link.startswith('o') != True:
+                startO = link.index('-o-')
+                startO = startO+1
+                abbreviation = link[startO:startO+7]
+                if startO == 0:  # jouat
+                    abbreviation = link[startO:startO+5]
+
+            responseDNS = client.describe_load_balancers(
+                LoadBalancerNames=[
+                    link,
+                ],
+
             )
-            print(response['Description'])   
-            inf=response['Description']['Value']
-           
-            elb_name=list(stack.outputs[4].values())
-            link=elb_name[1]
-            startO=link.index('o')
-            abbreviation=link[startO:startO+7]
-            if link.startswith('o')!=True:
-              startO=link.index('-o-')
-              startO=startO+1
-              abbreviation=link[startO:startO+7]
-              if startO == 0:       #jouat
-                abbreviation=link[startO:startO+5]  
-               
-                 
-                
-           
-            responseDNS = client.describe_load_balancers(   
-            LoadBalancerNames=[
-                      link,
-               ],    
-   
-            )
-            dns=responseDNS['LoadBalancerDescriptions'][0]['DNSName']
-            
+            dns = responseDNS['LoadBalancerDescriptions'][0]['DNSName']
+
             data = {
-            
-            'text': "<!here> Stack Refresh is completed",       
-            'attachments': [
-                 {
-                 "text":"*Stack*: _" +stack_name +"_ \n*URL* "+ abbreviation+".remscripts.com or \n http://"+dns+"  \n*Ticket*:https://jira.mscripts.com/browse/"+inf,
-                 "type": "mrkdwn",
-                 "color":"#00b300",
-                 "attachment_type": "default"
-                 
-                 }
-             ]
+
+                'text': "<!here> Stack Refresh is completed",
+                'attachments': [
+                    {
+                        "text": "*Stack*: _" + stack_name + "_ \n*URL* " + abbreviation+".remscripts.com or \n http://"+dns+"  \n*Ticket*:https://jira.mscripts.com/browse/"+inf,
+                        "type": "mrkdwn",
+                        "color": "#00b300",
+                        "attachment_type": "default"
+
+                    }
+                ]
             }
-            requests.post(url='https://hooks.slack.com/services/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',
-              data=json.dumps(data))
-             
+            requests.post(url= "< slack-url >",
+                          data=json.dumps(data))
+
         else:
-                print("Status not successful")
-            
-            
-   
-    
+            print("Status not successful")
