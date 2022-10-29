@@ -15,4 +15,4 @@ When triggerred lambda function is run to send a message to slack after fetching
 
 ## Use Case:
 
-This helped in monitoring cloudformation stack updates across teams and reduced need of communication 
+This helped in monitoring cloudformation stack updates across teams and reduced need of unnecessary communication 
