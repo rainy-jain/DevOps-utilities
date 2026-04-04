@@ -1,5 +1,4 @@
 var aws = require("aws-sdk"); //installed
-
 var fs = require("fs");
 var Config = require("./Configs.json");
 const Promise = require("bluebird");
@@ -25,7 +24,7 @@ const MicroserviceProdStatus = async (service, credentials) => {
 
   try {
     const data = await ecs.describeServices(params).promise();
-    var updatedAt = data.services[0].deployments[0].updatedAt.toISOString();
+    var updatedAt = data?.services?.[0].deployments[0].updatedAt.toISOString();
     updatedAt = updatedAt.replace("T", " ").split(".");
     updatedAt = updatedAt[0];
     return updatedAt;

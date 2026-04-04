@@ -1,5 +1,4 @@
 var aws = require("aws-sdk");
-var Q = require("q");
 var fs = require("fs");
 var Config = require("./Configs.json");
 var ConfigUat = fs.readFileSync(__dirname + "/Configs.json"); //synchronous
@@ -16,19 +15,33 @@ const MicroserviceStatus = async service => {
     services: [Config["uat"][service]["services"]]
   };
 
-  const describeServicesPromise = () => {
-    return new Promise((resolve, reject) => {
-      ecs.describeServices(params, (error, data) => {
-        var updatedAt = data.services[0].deployments[0].updatedAt.toISOString();
-        updatedAt = updatedAt.replace("T", " ").split(".");
-        updatedAt = updatedAt[0];
 
-        resolve(updatedAt);
-      });
-    });
+  try{
+    const data = await ecs.describeServices(params).promise()
+    var updatedAt = data?.services?.[0].deployments?.[0]?.updatedAt?.toISOString();
+    updatedAt = updatedAt.replace("T", " ").split(".");
+    updatedAt = updatedAt[0];
+  
+     return updatedAt
+   }
+   catch(err){
+    console.error(err)
+    return "Unknown"
+   }
+     
   };
-  const a = await describeServicesPromise();
-  return a;
-};
+  // const describeServicesPromise = () => {
+  //   return new Promise((resolve, reject) => {
+  //     ecs.describeServices(params, (error, data) => {
+  //       var updatedAt = data.services[0].deployments[0].updatedAt.toISOString();
+  //       updatedAt = updatedAt.replace("T", " ").split(".");
+  //       updatedAt = updatedAt[0];
+
+  //       resolve(updatedAt);
+  //     });
+  //   });
+  // };
+  // const a = await describeServicesPromise();
+  // return a;
 
 module.exports = MicroserviceStatus;
